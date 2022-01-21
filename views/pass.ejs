@@ -1,0 +1,12 @@
+<link rel="stylesheet" href="/css/styles.css">
+<table>
+<th>email/userid</th><th>application</th><th>password</th>
+    <%for(var i = 0; i<data.length;i++){%>
+    <tr><td><p><%=data[i].email %></p></td>
+    <td><p><%=data[i].app%></p></td>
+    <td><p><%=data[i].pass%></p></td>
+</tr>
+<%}%>
+</table>
+
+<a href="/">home</a>
