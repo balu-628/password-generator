@@ -39,7 +39,7 @@ function genPass() {
 }
 
 
-function logout(){
+function logout() {
   session.id = '';
   session.key = '';
   location.replace('localhost:3000');
@@ -53,25 +53,46 @@ app.get("/", function(req, res) {
   })
 });
 app.post('/', function(req, res) {
-  genPass();
-  const newPass = new Password({
-    pass: password,
-    email: req.body.email,
-    app: req.body.app
-  });
-  newPass.save();
-  res.render('passGen', {
-    password: password,
-    email: req.body.email,
-    app: req.body.app
-  })
+  if (req.body.uPass1 && req.body.uPass2) {
+    if (req.body.uPass1 === req.body.uPass2) {
+      const newPass = new Password({
+        pass: req.body.uPass1,
+        email: req.body.email,
+        app: req.body.app
+      });
+      newPass.save();
+      res.render('passGen', {
+        password: req.body.uPass1,
+        email: req.body.email,
+        app: req.body.app
+      });
+    } else {
+      console.log("failed to add password to Database : password didn't match.")
+      res.redirect('/')
+    }
+  } else {
+    genPass();
+    const newPass = new Password({
+      pass: password,
+      email: req.body.email,
+      app: req.body.app
+    });
+    newPass.save();
+    res.render('passGen', {
+      password: password,
+      email: req.body.email,
+      app: req.body.app
+    });
+  }
+
+
 });
 
 
 
 app.get('/pass', function(req, res) {
   if (session.id == loginDetails.id && session.key == loginDetails.key) {
-    let data ;
+    let data;
     Password.find({}, function(err, foundItems) {
       data = foundItems;
       res.render('pass', {
@@ -79,6 +100,7 @@ app.get('/pass', function(req, res) {
       });
     });
   } else {
+
     res.redirect('/login');
   }
 });
